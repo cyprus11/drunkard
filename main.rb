@@ -1,8 +1,6 @@
 require 'dotenv/load'
 require 'telegram/bot'
 
-require_relative 'lib/player'
-require_relative 'lib/deck'
 require_relative 'lib/game'
 
 token = ENV["TELEGRAM_TOKEN"]
