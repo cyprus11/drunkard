@@ -1,0 +1,38 @@
+{
+  "six": {
+    "symbol": "6",
+    "weight": 6
+  },
+  "seven": {
+    "symbol": "7",
+    "weight": 7
+  },
+  "eight": {
+    "symbol": "8",
+    "weight": 8
+  },
+  "nine": {
+    "symbol": "9",
+    "weight": 9
+  },
+  "ten": {
+    "symbol": "10",
+    "weight": 10
+  },
+  "jack": {
+    "symbol": "J",
+    "weight": 11
+  },
+  "queen": {
+    "symbol": "Q",
+    "weight": 12
+  },
+  "king": {
+    "symbol": "K",
+    "weight": 13
+  },
+  "ace": {
+    "symbol": "A",
+    "weight": 14
+  }
+}
