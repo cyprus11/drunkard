@@ -65,7 +65,7 @@ class Game
   end
 
   def send_log(log)
-    if log.join("\n") > 4096
+    if log.join("\n").length >= 4096
       log1 = log[0...log.size / 2]
       log2 = log[log.size / 2..log.size]
       send_log(log1)
