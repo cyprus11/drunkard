@@ -20,6 +20,7 @@ GEM
     inflecto (0.0.2)
     multipart-post (2.1.1)
     ruby2_keywords (0.0.4)
+    sqlite3 (1.4.2)
     telegram-bot-ruby (0.14.0)
       faraday
       inflecto
@@ -36,6 +37,7 @@ PLATFORMS
 
 DEPENDENCIES
   dotenv
+  sqlite3
   telegram-bot-ruby
 
 RUBY VERSION

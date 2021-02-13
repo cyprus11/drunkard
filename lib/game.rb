@@ -1,12 +1,14 @@
 require_relative 'player'
 require_relative 'deck'
+require_relative 'database'
 
 class Game
   def initialize(bot, message)
+    @db = Database.new
     @bot = bot
     @message = message
-    @player1 = Player.new(message.from.first_name)
-    @player2 = Player.new('DrunkardGoodBot')
+    @player1 = @db.find_or_create_player(message.from.id, message.from.first_name)
+    @player2 = Player.new(0, 'DrunkardGoodBot', 0, 0)
     @deck = Deck.new.shuffle
     @game_log = []
 
@@ -57,10 +59,14 @@ class Game
 
     if @player1.cards.empty?
       write_to_log("Победил #{@player2}")
+      @player1.bot_score = @player1.bot_score + 1
     else
       write_to_log("Победил #{@player1}")
+      @player1.score = @player1.score + 1
     end
 
+    @db.update_info(@player1)
+    write_to_log("Общий счёт:\nБот:#{@player1.bot_score}\nИгрок: #{@player1.score}")
     send_log(@game_log)
   end
 
@@ -77,5 +83,13 @@ class Game
 
   def write_to_log(text)
     @game_log << text
+  end
+
+  def self.score(id)
+    db = Database.new
+    score = db.score(id)
+    bot_score = score[0]
+    user_score = score[1]
+    "Общий счёт:\nБот:#{bot_score}\nИгрок: #{user_score}"
   end
 end
