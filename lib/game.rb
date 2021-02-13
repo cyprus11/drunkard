@@ -21,10 +21,10 @@ class Game
       write_to_log("Игрок #{@player1} положил карту: #{player1_card}")
       write_to_log("Игрок #{@player2} положил карту: #{player2_card}")
 
-      if player1_card.weight > player2_card.weight
+      if player1_card > player2_card
         @player1.cards += [player2_card, player1_card]
         write_to_log("Сильнее карта у #{@player1}")
-      elsif player1_card.weight < player2_card.weight
+      elsif player1_card < player2_card
         @player2.cards += [player1_card, player2_card]
         write_to_log("Сильнее карта у #{@player2}")
       else
@@ -37,11 +37,11 @@ class Game
             write_to_log("Игрок #{@player1} положил карту: #{player1_card}")
             write_to_log("Игрок #{@player2} положил карту: #{player2_card}")
 
-            if player1_card.weight > player2_card.weight
+            if player1_card > player2_card
               @player1.cards += cards_on_table + [player2_card, player1_card]
               write_to_log("Сильнее карта у #{@player1}")
               break
-            elsif player1_card.weight < player2_card.weight
+            elsif player1_card < player2_card
               @player2.cards += cards_on_table + [player1_card, player2_card]
               write_to_log("Сильнее карта у #{@player2}")
               break
