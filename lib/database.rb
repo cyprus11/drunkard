@@ -1,25 +1,27 @@
+# frozen_string_literal: true
+
 require 'sqlite3'
 require_relative 'player'
 
 class Database
   def initialize
-    if File.exist?("#{__dir__}/../db/drunkyard.db")
-      @db = SQLite3::Database.new("#{__dir__}/../db/drunkyard.db")
+    if File.exist?("#{__dir__}/../db/drunkard.db")
+      @db = SQLite3::Database.new("#{__dir__}/../db/drunkard.db")
     else
-      @db = SQLite3::Database.new("#{__dir__}/../db/drunkyard.db")
+      @db = SQLite3::Database.new("#{__dir__}/../db/drunkard.db")
       create_table
     end
   end
 
   def find_or_create_player(user_id, name)
-    player_db = @db.execute('select * from players where user_id is (?)', [user_id])
-    player_db.flatten!
+    player_db = @db.execute('select * from players where user_id is (?)', [user_id]).flatten
+
     if player_db.empty?
       @db.execute('insert into players (user_id, user_name, user_score, bot_score) values(?, ?, ?, ?)',
                   [user_id, name, 0, 0])
-      return Player.new(user_id, name, 0, 0)
+      Player.new(user_id, name, 0, 0)
     else
-      return Player.new(player_db[0], player_db[1], player_db[2], player_db[3])
+      Player.new(player_db[0], player_db[1], player_db[2], player_db[3])
     end
   end
 

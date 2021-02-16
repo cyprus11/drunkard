@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require_relative 'card'
 
@@ -11,8 +13,8 @@ class Deck
     cards = JSON.parse(File.read("#{__dir__}/../data/cards.json"))
     cards.each do |card|
       SUITS.each do |suit|
-        @cards_in_deck << Card.new(value: card.last["symbol"],
-                                   weight: card.last["weight"],
+        @cards_in_deck << Card.new(value: card.last['symbol'],
+                                   weight: card.last['weight'],
                                    suit: suit)
       end
     end

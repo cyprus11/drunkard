@@ -1,13 +1,13 @@
+# frozen_string_literal: true
+
 require_relative 'player'
 require_relative 'deck'
-require_relative 'database'
 
 class Game
   def initialize(bot, message)
-    @db = Database.new
     @bot = bot
     @message = message
-    @player1 = @db.find_or_create_player(message.from.id, message.from.first_name)
+    @player1 = Player.find_or_create(message.from.id, message.from.first_name)
     @player2 = Player.new(0, 'DrunkardGoodBot', 0, 0)
     @deck = Deck.new.shuffle
     @game_log = []
@@ -16,42 +16,23 @@ class Game
   end
 
   def play
+    cards_on_table = []
+
     while @player1.cards.any? && @player2.cards.any?
       player1_card = @player1.card_on_table
       player2_card = @player2.card_on_table
+
+      cards_on_table << player1_card << player2_card
 
       write_to_log("Игрок #{@player1} положил карту: #{player1_card}")
       write_to_log("Игрок #{@player2} положил карту: #{player2_card}")
 
       if player1_card > player2_card
-        @player1.cards += [player2_card, player1_card]
-        write_to_log("Сильнее карта у #{@player1}")
+        cards_on_table = take_cards(@player1, cards_on_table)
       elsif player1_card < player2_card
-        @player2.cards += [player1_card, player2_card]
-        write_to_log("Сильнее карта у #{@player2}")
+        cards_on_table = take_cards(@player2, cards_on_table)
       else
-        if @player1.cards.any? && @player2.cards.any?
-          cards_on_table = [player1_card, player2_card]
-          loop do
-            player1_card = @player1.card_on_table
-            player2_card = @player2.card_on_table
-
-            write_to_log("Игрок #{@player1} положил карту: #{player1_card}")
-            write_to_log("Игрок #{@player2} положил карту: #{player2_card}")
-
-            if player1_card > player2_card
-              @player1.cards += cards_on_table + [player2_card, player1_card]
-              write_to_log("Сильнее карта у #{@player1}")
-              break
-            elsif player1_card < player2_card
-              @player2.cards += cards_on_table + [player1_card, player2_card]
-              write_to_log("Сильнее карта у #{@player2}")
-              break
-            else
-              cards_on_table += [player1_card, player2_card]
-            end
-          end
-        end
+        write_to_log('Карты равны.')
       end
 
       write_to_log("\n#{'=' * 30}\n")
@@ -65,7 +46,7 @@ class Game
       @player1.score = @player1.score + 1
     end
 
-    @db.update_info(@player1)
+    @player1.update
     write_to_log("Общий счёт:\nБот:#{@player1.bot_score}\nИгрок: #{@player1.score}")
     send_log(@game_log)
   end
@@ -79,6 +60,12 @@ class Game
     else
       @bot.api.send_message(chat_id: @message.chat.id, text: log.join("\n"))
     end
+  end
+
+  def take_cards(player, cards_on_table)
+    player.cards += cards_on_table
+    write_to_log("Сильнее карта у #{player}")
+    []
   end
 
   def write_to_log(text)
